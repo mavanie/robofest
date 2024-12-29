@@ -4,16 +4,16 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
-import com.qualcomm.robotcore.util.TypeConversion;
 
+@SuppressWarnings({"weakerAccess", "unused"})
 @I2cDeviceType
 @DeviceProperties(name = "Dual Alphanumeric Display", xmlTag = "AlphaDisplay")
 public class AlphaDisplay extends I2cDeviceSynchDevice<I2cDeviceSynch>{
-    public static I2cAddr ADDRESS_I2C_DEFAULT = I2cAddr.create7bit(0x70);
+    public final static I2cAddr ADDRESS_I2C_DEFAULT = I2cAddr.create7bit(0x70);
     private static final int SYSTEM_ON = 0x21;
     private static final int DISPLAY_DATA = 0x00;
     private static final int DISPLAY_ON = 0x81;
-    private byte[] display = new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private final byte[] display = new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     private static final int[] alphaFontTable = new int[] {
         0b0000000000000001, 0b0000000000000010, 0b0000000000000100,
         0b0000000000001000, 0b0000000000010000, 0b0000000000100000,
@@ -123,7 +123,7 @@ public class AlphaDisplay extends I2cDeviceSynchDevice<I2cDeviceSynch>{
         0b0000010100100000, // ~
         0b0011111111111111,
     };
-    protected AlphaDisplay(I2cDeviceSynch i2cDeviceSynch, boolean deviceClientIsOwned) {
+    public AlphaDisplay(I2cDeviceSynch i2cDeviceSynch, boolean deviceClientIsOwned) {
         super(i2cDeviceSynch, deviceClientIsOwned);
         this.deviceClient.setI2cAddress(ADDRESS_I2C_DEFAULT);
         super.registerArmingStateCallback(false);
@@ -158,21 +158,5 @@ public class AlphaDisplay extends I2cDeviceSynchDevice<I2cDeviceSynch>{
     @Override
     public String getDeviceName() {
         return "Dual Alphanumeric Display";
-    }
-    public enum Register
-    {
-        DISPLAY_DATA(0x00),
-        SYSTEM_SETUP(0x02),
-        DISPLAY_SETUP(0x08);
-        public int bVal;
-
-        Register(int bVal)
-        {
-            this.bVal = bVal;
-        }
-    }
-    protected void writeShort(final Register reg, short value)
-    {
-        deviceClient.write(reg.bVal, TypeConversion.shortToByteArray(value));
     }
 }
